@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Remembering the Atom Bomb - Graham Coulter</title>
+    <!-- load some big magic scripts  -->
+    <!-- jQuery is an important framework used by many web projects  -->
+    <script src="http://code.jquery.com/jquery-2.1.4.js"></script>
+
+    <!-- remarkable is our markdown parser, which translates markdown into HTML -->
+    <script src="https://cdn.jsdelivr.net/remarkable/1.7.1/remarkable.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="all"
+          href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/flatly/bootstrap.min.css" />
+  </head>
+
+    <body>
+
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Remembering the Atom Bomb | by Graham Coulter</a> <!-- should be descriptive -->
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+
+      <!-- these next 2 divs place the main content inside a box with margins from the screen edge -->
+      <div class="container">
+        <div class = "row">
+          <!-- this is our audio div.  It holds the audio file. -->
+          <audio id="media" controls="controls">
+
+            <source src="https://storycorpsorg-staging.s3.amazonaws.com/uploads/witness-to-the-atom-bomb-1.mp3"
+                    type="audio/mp3" />
+          </audio>
+
+          <div id="contentdiv">
+
+          </div>
+        </div>
+      </div>
+
+      <!-- this short script dumps the contents of index.md into the #contentdiv div element, and renders
+           them as HTML. Also declares a function to be used in links, to seke to a timecode in #media  -->
+      <script>
+
+        //instantiate the parser object and declare the placeholder variable for the rendered content
+        var md = new Remarkable({
+              html: true,
+              linkify: true}),
+            renderedcontent = "";
+        md.block.ruler.enable([
+        'footnote',
+        'deflist'
+        ]);
+        md.inline.ruler.enable([
+        'footnote_inline',
+        'ins',
+        'mark',
+        'sub',
+        'sup'
+        ]);
+        //retrieve the markdown file, parse it, and use it to replace the content of #contentdiv
+        $.get("./index.md", function (response) {
+           content = response;
+           renderedcontent = md.render(content);
+           $("#contentdiv").html(renderedcontent);
+         });
+
+        // declare a function to seek to a timecode in the #media object
+        var seek = function (time) {
+        document.getElementById("media").currentTime= time;
+        };
+        seek(68);
+      </script>
+      <!-- This <link> element controls some style elements for the page.
+           It controls some important elements of presentation.
+           We load it after strapdown in case you want to override
+           some of the bootstrap css -->
+      <link rel="stylesheet" type="text/css" media="all"
+            href="style.css" />
+    </body>
+</html>
